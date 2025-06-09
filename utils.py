@@ -48,7 +48,7 @@ def extract_edges(image: np.ndarray, shortest_path: Callable[[np.ndarray], np.nd
         edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     contours = np.ndarray(len(contours_), dtype=object)
     for i, contour in enumerate(contours_):
-        contours[i] = contours_[i]
+        contours[i] = contour
     # only keep contours with 50 or more pixels
     contours = contours[np.vectorize(len)(contours) > 50]
     # convert contours into complex numbers
