@@ -110,7 +110,7 @@ if __name__ == "__main__":
             "video_dir", module_name=""), tail), outfile)
 
         # preview file
-        if args["Output Options"]["preview"]:
+        if args["Output Options"].get("preview", False):
             os.startfile(outfile)
 
     except Exception as e:
