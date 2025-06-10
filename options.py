@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import os
+from typing import Any
 
 from manim import config
 
@@ -8,7 +9,7 @@ config.verbosity = "ERROR"
 config.frame_rate = 30
 
 
-def parse_args() -> dict[dict, ...]:
+def parse_args() -> dict[dict[str, Any]]:
     parser = ArgumentParser(
         description="Transform an image or a polygon into a series of rotating circles")
 

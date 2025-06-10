@@ -1,5 +1,6 @@
 manim<0.19 # unknown breaking change in v0.19
 numpy
 opencv-python>=4.1
+python-tsp
 svgpathtools
 tqdm
