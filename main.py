@@ -11,6 +11,29 @@ from options import parse_args, config
 
 class FourierScene(Scene):
     # set scaling for circles and arrows
+    def export_input_points(self, filename: str):
+        # Angenommen, 'self.points' enthält Ihr Array mit komplexen Zahlen
+        # points = self.points 
+
+        # SVG Pfad-Daten erstellen: M (Startpunkt), L (Linie zu...)
+        # Realteil = x, -Imaginärteil = y
+        path_string = "M " + " L ".join([f"{p.real:.4f},{-p.imag:.4f}" for p in points])
+
+        # Dynamische ViewBox berechnen, damit alles ins Bild passt
+        x_vals = [p.real for p in points]
+        y_vals = [-p.imag for p in points]
+        min_x, max_x = min(x_vals), max(x_vals)
+        min_y, max_y = min(y_vals), max(y_vals)
+        w, h = max_x - min_x, max_y - min_y
+
+        svg_content = f"""<svg xmlns="http://w3.org" 
+            viewBox="{min_x - 1} {min_y - 1} {w + 2} {h + 2}" 
+            style="background: white;">
+            <path d="{path_string}" fill="none" stroke="black" stroke-width="0.05" />
+        </svg>"""
+
+        with open(filename, "w") as f:
+            f.write(svg_content)
 
     def __init__(self, points: np.ndarray,  number: int, rotations: int, duration: int, fade: float, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,6 +58,7 @@ class FourierScene(Scene):
                           stroke_width=2, stroke_opacity=.5) for i in range(self.N)]
         # start a blank path
         path = NestedPath()
+        self.export_input_points("input_pfad.svg")
 
         # create values and points array for cycles
         values = ArrayMobject()
