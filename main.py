@@ -66,11 +66,13 @@ class FourierScene(Scene):
         min_y, max_y = min(y_vals), max(y_vals)
         w, h = max_x - min_x, max_y - min_y
 
-        svg_content = f"""<svg xmlns="http://w3.org" 
-            viewBox="{min_x - 1} {min_y - 1} {w + 2} {h + 2}" 
-            style="background: white;">
-            <path d="{path_string}" fill="none" stroke="black" stroke-width="0.05" />
-        </svg>"""
+        svg_content = (
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> \n"
+            "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"> \n"
+            f"<svg width=\"100%\" height=\"100%\" viewBox=\"{min_x - 1} {min_y - 1} {w + 2} {h + 2}\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\" xmlns:serif=\"http://www.serif.com/\" style=\"fill-rule:evenodd;clip-rule:evenodd;\">\n"
+            f"\t<path d=\"{path_string}\"  style=\"fill:none;fill-rule:nonzero;stroke:red;stroke-width:0.05px;\"/>\n"
+            "</svg>"
+            )  
 
         with open(filename, "w") as f:
             f.write(svg_content)
