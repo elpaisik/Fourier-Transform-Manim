@@ -25,6 +25,7 @@ class FourierScene(Scene):
     def construct(self):
         # perform fft on points to produce N cycles
         amplitudes, frequencies, phases = fft(self.points, self.N)
+        print("amplitudes:\n{0}\n\n frequencies:\n{1}\n\n phases:\n{2}".format(amplitudes, frequencies, phases))
 
         # initialise time at t = 0
         tracker = ValueTracker(0)

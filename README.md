@@ -1,3 +1,15 @@
+# How to run in Github Codespaces
+```
+chmod +x ./install_requirements.sh
+./install_requirements.sh
+```
+drag & drop image file (e.g. Torx_v2_exakt.svg) in folder FOURIER-TRANSFORM-MANIM
+Start main.py with options, e.g.:
+```
+$ python main.py -n 3 -r 2 vector Torx_v2_exakt.svg
+```
+See output.mp4 in the same folder es the image file
+
 # Fourier Transform (Epicycles)
 Transform an image or a polygon into a series of rotating circles.  
 This project is written from scratch and it looks like a spin off from the videos because that was the aim, not because the code was copied (trust me if I could have, it would have saved me a ton of effort).  
