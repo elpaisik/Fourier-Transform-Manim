@@ -11,6 +11,17 @@ from options import parse_args, config
 
 class FourierScene(Scene):
     # set scaling for circles and arrows
+
+    def __init__(self, points: np.ndarray,  number: int, rotations: int, duration: int, fade: float, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # setup settings
+        self.points = points
+        self.N = min(number, len(self.points))
+        self.rotations = rotations
+        self.duration = duration
+        self.fade = fade
+
     def export_input_points(self, filename: str):
         # Angenommen, 'self.points' enthält Ihr Array mit komplexen Zahlen
         # points = self.points 
@@ -26,6 +37,35 @@ class FourierScene(Scene):
         min_y, max_y = min(y_vals), max(y_vals)
         w, h = max_x - min_x, max_y - min_y
 
+        svg_content = (
+            "<svg xmlns=\"http://w3.org\" \n"
+            f"viewBox=\"{min_x - 1} {min_y - 1} {w + 2} {h + 2}\" \n"
+            "style=\"background: white;\">\n"
+            f"\t<path d=\"{path_string}\" fill=\"none\" stroke=\"black\" stroke-width=\"0.05\" />\n"
+            "</svg>"
+            )   
+
+        with open(filename, "w") as f:
+            f.write(svg_content)
+
+    def export_final_path(self, path: NestedPath, filename: str):
+        # 1. Den Zustand des Pfads "einfrieren" (stoppt den Updater)
+        path.update(1) # Sicherstellen, dass der letzte Punkt berechnet wurde
+        path.clear_updaters()
+
+        # Alle Punkte des Pfads extrahieren
+        final_points = path.get_all_points()
+
+        # SVG Pfad-Daten erstellen: M (Startpunkt), L (Linie zu...)
+        path_string = "M " + " L ".join([f"{p[0]:.4f},{-p[1]:.4f}" for p in final_points])
+
+        # Dynamische ViewBox berechnen, damit alles ins Bild passt
+        x_vals = [p[0] for p in final_points]
+        y_vals = [-p[1] for p in final_points]
+        min_x, max_x = min(x_vals), max(x_vals)
+        min_y, max_y = min(y_vals), max(y_vals)
+        w, h = max_x - min_x, max_y - min_y
+
         svg_content = f"""<svg xmlns="http://w3.org" 
             viewBox="{min_x - 1} {min_y - 1} {w + 2} {h + 2}" 
             style="background: white;">
@@ -34,16 +74,6 @@ class FourierScene(Scene):
 
         with open(filename, "w") as f:
             f.write(svg_content)
-
-    def __init__(self, points: np.ndarray,  number: int, rotations: int, duration: int, fade: float, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # setup settings
-        self.points = points
-        self.N = min(number, len(self.points))
-        self.rotations = rotations
-        self.duration = duration
-        self.fade = fade
 
     def construct(self):
         # perform fft on points to produce N cycles
@@ -94,31 +124,7 @@ class FourierScene(Scene):
         self.play(tracker.animate.set_value(self.rotations * 2 * np.pi),
                   run_time=self.duration * self.rotations, rate_func=linear)
         
-        # 1. Den Zustand des Pfads "einfrieren" (stoppt den Updater)
-        path.update(1) # Sicherstellen, dass der letzte Punkt berechnet wurde
-        path.clear_updaters()
-
-        # 2. Alle generierten Punkte extrahieren
-        final_points = path.get_all_points()
-
-        # 3. SVG-Export (X, -Y zur Achsen-Korrektur)
-        if len(final_points) > 0:
-            path_str = "M " + " L ".join([f"{p[0]:.4f},{-p[1]:.4f}" for p in final_points])
-            
-            # Bounding Box für die Ansicht berechnen
-            min_x, min_y = np.min(final_points[:, :2], axis=0)
-            max_x, max_y = np.max(final_points[:, :2], axis=0)
-            
-            svg = f"""<svg xmlns="http://w3.org" 
-                viewBox="{min_x-1} {-max_y-1} {max_x-min_x+2} {max_y-min_y+2}">
-                <path d="{path_str}" fill="none" stroke="black" stroke-width="0.05" />
-            </svg>"""
-            
-            with open("fourier_result.svg", "w") as f:
-                f.write(svg)
-            print(f"SVG erfolgreich mit {len(final_points)} Punkten gespeichert!")
-
-
+        self.export_final_path(path, "final_pfad.svg")
 
 if __name__ == "__main__":
     # parse cli args (--help for more info)
