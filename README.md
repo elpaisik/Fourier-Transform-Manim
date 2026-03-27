@@ -6,7 +6,8 @@ chmod +x ./install_requirements.sh
 drag & drop image file (e.g. Torx_v2_exakt.svg) in folder FOURIER-TRANSFORM-MANIM
 Start main.py with options, e.g.:
 ```
-$ python main.py -n 3 -r 2 vector Torx_v2_exakt.svg
+python main.py -n 3 -r 2 vector Torx_v2_exakt.svg
+python main.py -n 3 -r 2 image Torx_v2.jpg
 ```
 See output.mp4 in the same folder es the image file
 

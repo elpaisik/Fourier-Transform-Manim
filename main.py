@@ -69,6 +69,31 @@ class FourierScene(Scene):
         # play the animation
         self.play(tracker.animate.set_value(self.rotations * 2 * np.pi),
                   run_time=self.duration * self.rotations, rate_func=linear)
+        
+        # 1. Den Zustand des Pfads "einfrieren" (stoppt den Updater)
+        path.update(1) # Sicherstellen, dass der letzte Punkt berechnet wurde
+        path.clear_updaters()
+
+        # 2. Alle generierten Punkte extrahieren
+        final_points = path.get_all_points()
+
+        # 3. SVG-Export (X, -Y zur Achsen-Korrektur)
+        if len(final_points) > 0:
+            path_str = "M " + " L ".join([f"{p[0]:.4f},{-p[1]:.4f}" for p in final_points])
+            
+            # Bounding Box für die Ansicht berechnen
+            min_x, min_y = np.min(final_points[:, :2], axis=0)
+            max_x, max_y = np.max(final_points[:, :2], axis=0)
+            
+            svg = f"""<svg xmlns="http://w3.org" 
+                viewBox="{min_x-1} {-max_y-1} {max_x-min_x+2} {max_y-min_y+2}">
+                <path d="{path_str}" fill="none" stroke="black" stroke-width="0.05" />
+            </svg>"""
+            
+            with open("fourier_result.svg", "w") as f:
+                f.write(svg)
+            print(f"SVG erfolgreich mit {len(final_points)} Punkten gespeichert!")
+
 
 
 if __name__ == "__main__":
