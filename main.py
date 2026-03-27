@@ -28,7 +28,7 @@ class FourierScene(Scene):
 
         # SVG Pfad-Daten erstellen: M (Startpunkt), L (Linie zu...)
         # Realteil = x, -Imaginärteil = y
-        path_string = "M " + " L ".join([f"{p.real:.4f},{-p.imag:.4f}" for p in points])
+        self.path_string_input = "M " + " L ".join([f"{p.real:.4f},{-p.imag:.4f}" for p in points])
 
         # Dynamische ViewBox berechnen, damit alles ins Bild passt
         x_vals = [p.real for p in points]
@@ -41,7 +41,7 @@ class FourierScene(Scene):
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> \n"
             "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"> \n"
             f"<svg width=\"100%\" height=\"100%\" viewBox=\"{min_x - 1} {min_y - 1} {w + 2} {h + 2}\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\" xmlns:serif=\"http://www.serif.com/\" style=\"fill-rule:evenodd;clip-rule:evenodd;\">\n"
-            f"\t<path d=\"{path_string}\"  style=\"fill:none;fill-rule:nonzero;stroke:black;stroke-width:0.05px;\"/>\n"
+            f"\t<path d=\"{self.path_string_input}\"  style=\"fill:none;fill-rule:nonzero;stroke:black;stroke-width:0.05px;\"/>\n"
             "</svg>"
             )   
 
@@ -75,6 +75,18 @@ class FourierScene(Scene):
             )  
 
         with open(filename, "w") as f:
+            f.write(svg_content)
+        
+        svg_content = (
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> \n"
+            "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"> \n"
+            f"<svg width=\"100%\" height=\"100%\" viewBox=\"{min_x - 1} {min_y - 1} {w + 2} {h + 2}\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xml:space=\"preserve\" xmlns:serif=\"http://www.serif.com/\" style=\"fill-rule:evenodd;clip-rule:evenodd;\">\n"
+            f"\t<path d=\"{self.path_string_input}\"  style=\"fill:none;fill-rule:nonzero;stroke:blue;stroke-width:0.05px;\"/>\n"
+            f"\t<path d=\"{path_string}\"  style=\"fill:none;fill-rule:nonzero;stroke:red;stroke-width:0.05px;\"/>\n"
+            "</svg>"
+            )  
+
+        with open("input_vs_output.svg", "w") as f:
             f.write(svg_content)
 
     def construct(self):
